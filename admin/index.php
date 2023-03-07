@@ -1,3 +1,7 @@
+<?php
+require 'function/global.php'
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

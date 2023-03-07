@@ -23,9 +23,21 @@
 
   <!-- Nav Item - Tables -->
   <li class="nav-item <?= $page == 2 ? 'active' : '' ?>">
-    <a class="nav-link" href="projects.php">
+    <a class="nav-link" href="admin.php">
       <i class="fas fa-fw fa-table"></i>
-      <span>Projects</span></a>
+      <span>Admin</span></a>
+  </li>
+  <!-- Nav Item - Tables -->
+  <li class="nav-item <?= $page == 3 ? 'active' : '' ?>">
+    <a class="nav-link" href="kategori_produk.php">
+      <i class="fas fa-fw fa-table"></i>
+      <span>Kategori Produk</span></a>
+  </li>
+  <!-- Nav Item - Tables -->
+  <li class="nav-item <?= $page == 4 ? 'active' : '' ?>">
+    <a class="nav-link" href="satuan_produk.php">
+      <i class="fas fa-fw fa-table"></i>
+      <span>Satuan Produk</span></a>
   </li>
 
   <!-- Divider -->

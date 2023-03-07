@@ -14,3 +14,5 @@
 
     <!-- Page level custom scripts -->
     <script src="../assets-cms/js/demo/datatables-demo.js"></script>
+    <script src="../assets-cms/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets-cms/js/sweetalert.min.js"></script>
