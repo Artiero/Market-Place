@@ -1,4 +1,8 @@
 <?php
+session_start();
+if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'admin') {
+    header('Location: login.php');
+}
 require './function/global.php';
 require './function/function_satuan_produk.php';
 $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');

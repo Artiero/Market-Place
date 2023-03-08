@@ -1,3 +1,8 @@
+<?php
+
+require '../admin/function/global.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

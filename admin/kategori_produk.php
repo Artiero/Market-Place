@@ -1,4 +1,8 @@
 <?php
+session_start();
+if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'admin') {
+    header('Location: login.php');
+}
 require './function/global.php';
 require './function/function_kategori_produk.php';
 $kategori_produks = query_data('SELECT*FROM tbl_kategori_produk');
