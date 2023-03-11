@@ -21,13 +21,6 @@
   <!-- Divider -->
   <hr class="sidebar-divider my-0">
 
-  <!-- Nav Item - Tables -->
-  <li class="nav-item <?= $page == 2 ? 'active' : '' ?>">
-    <a class="nav-link" href="jenis_bank.php">
-      <i class="fas fa-fw fa-table"></i>
-      <span>Jenis Bank</span></a>
-  </li>
-
   <!-- Divider -->
   <hr class="sidebar-divider d-none d-md-block">
 

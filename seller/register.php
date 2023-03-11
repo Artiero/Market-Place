@@ -17,10 +17,10 @@ $jenis_banks = query_data('SELECT*FROM tbl_jenis_bank');
 
 </head>
 
-<body>
+<body style="overflow-x: hidden;">
     <div class="row justify-content-center">
         <div class="col-xl-6">
-            <div class="card mt-5 py-5 px-5">
+            <div class="card my-5 py-5 px-5">
                 <div class="card-body">
                     <h5 class="card-title text-center mb-3">Registrasi</h5>
                     <form role="form" action="" method="POST" autocomplete="off" enctype="multipart/form-data">
@@ -76,7 +76,7 @@ $jenis_banks = query_data('SELECT*FROM tbl_jenis_bank');
                                 $jenis_banks = query_data('SELECT*FROM tbl_jenis_bank');
                                 foreach ($jenis_banks as $jenis_bank) :
                                 ?>
-                                    <option value="<?= $jenis_bank['id'] ?>"><?= $jenis_bank['singkatan'] ?></option>
+                                    <option value="<?= $jenis_bank['singkatan'] ?>"><?= $jenis_bank['singkatan'] ?></option>
                                 <?php
                                 endforeach;
                                 ?>
@@ -85,12 +85,6 @@ $jenis_banks = query_data('SELECT*FROM tbl_jenis_bank');
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password">
-
-                        </div>
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Status</label>
-                            <input type="text" class="form-control" id="status" name="status" disabled>
-
                         </div>
                         <div class="text-center">
                             <button type="submit" name="regis" class="btn btn-primary">Submit</button>

@@ -1,28 +1,30 @@
 <?php
-require 'connection.php';
+require '../admin/function/connection.php';
 
-function tambah_satuan_produk($data)
+function tambah_jenis_bank($data)
 {
     global $conn;
-    $nama_satuan = $data['nama_satuan'];
-    mysqli_query($conn, "INSERT INTO tbl_satuan_produk VALUES(NULL,'$nama_satuan')");
+    $nama_bank = $data['nama_bank'];
+    $singkatan = $data['singkatan'];
+    mysqli_query($conn, "INSERT INTO tbl_jenis_bank VALUES(NULL,'$nama_bank','$singkatan')");
     return mysqli_affected_rows($conn);
 }
 
-function hapus_satuan_produk($data)
+function hapus_jenis_bank($data)
 {
     global $conn;
     $id = $data;
-    mysqli_query($conn, "DELETE FROM tbl_satuan_produk WHERE id=$id");
+    mysqli_query($conn, "DELETE FROM tbl_jenis_bank WHERE id=$id");
     return mysqli_affected_rows($conn);
 }
 
-function ubah_satuan_produk($data)
+function ubah_jenis_bank($data)
 {
     global $conn;
     $id = $data['id'];
-    $nama_satuan = $data['nama_satuan'];
-    mysqli_query($conn, "UPDATE tbl_satuan_produk SET nama_satuan='$nama_satuan' WHERE id=$id");
+    $nama_bank = $data['nama_bank'];
+    $singkatan = $data['singkatan'];
+    mysqli_query($conn, "UPDATE tbl_jenis_bank SET nama_bank='$nama_bank' , singkatan='$singkatan' WHERE id=$id");
     return mysqli_affected_rows($conn);
 }
 

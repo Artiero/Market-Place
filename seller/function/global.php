@@ -1,5 +1,5 @@
 <?php
-require 'connection.php';
+require '../admin/function/connection.php';
 
 function query_data($data)
 {
@@ -82,7 +82,7 @@ function upload()
     // 8sdfi989898.
     $namaFileBaru .= $ekstensiFile;
     // 8sdfi989898.docx
-    move_uploaded_file($tmpName, '../assets-cms/img/' . $namaFileBaru);
+    move_uploaded_file($tmpName, '../asset/img/' . $namaFileBaru);
     return $namaFileBaru;
 }
 

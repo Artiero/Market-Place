@@ -1,5 +1,5 @@
 <?php
-require '../admin/function/global.php';
+require './function/global.php';
 
 function register($data){
 
@@ -17,7 +17,6 @@ function register($data){
   $jenis_bank = $data['jenis_bank'];
   $password = $data['password'];
   $hash_password = password_hash($password, PASSWORD_DEFAULT);
-  $status = $data['status'];
 
   mysqli_query($conn, "INSERT INTO tbl_seller 
   VALUES('$username',

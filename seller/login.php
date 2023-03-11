@@ -1,8 +1,8 @@
 <?php
-session_start();
-if (isset($_SESSION['username'])) {
-    header('Location: index.php');
-}
+// session_start();
+// if (isset($_SESSION['username'])) {
+//     header('Location: index.php');
+// }
 require 'function/function_login.php';
 ?>
 <!DOCTYPE html>
@@ -36,6 +36,9 @@ require 'function/function_login.php';
                         </div>
                         <div class="text-center">
                             <button type="submit" name="login" class="btn btn-primary">Submit</button>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="register.php">Register</a>
                         </div>
                     </form>
                 </div>
