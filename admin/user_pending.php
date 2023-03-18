@@ -2,10 +2,14 @@
 session_start();
 if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'admin') {
     header('Location: login.php');
+} elseif (isset($_SESSION['username'])&& $_SESSION['role'] != 'admin'){
+    header('Location: login.php');
 }
 require './function/global.php';
-require './function/function_satuan_produk.php';
-$satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
+require './function/function_user.php';
+$user_pendings = query_data("SELECT*FROM tbl_user WHERE status='Unactive' ");
+$username = $_SESSION['username'];
+// var_dump($seller_pendings)
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +23,7 @@ $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Pending</title>
+    <title>Seller Pending</title>
 
     <?php
     require 'views/link.php';
@@ -63,31 +67,52 @@ $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
                             <h6 class="m-0 font-weight-bold text-primary">Data User Pending</h6>
                         </div>
                         <div class="card-body">
-                            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#daftar-data"><i class="fas fa-user-plus mr-2"></i>Tambah</button>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Nama Kategori</th>
+                                            <th>Nama</th>
+                                            <th>Tempat Tanggal Lahir</th>
+                                            <th>Jenis Kelamin</th>
+                                            <th>Photo Profile</th>
+                                            <th>No. Telpon</th>
+                                            <th>Alamat</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        foreach ($satuan_produks as $satuan_produk) :
+                                        foreach ($user_pendings as $user_pending) :
                                         ?>
                                             <tr>
                                                 <td>
                                                     <?= $no ?>
                                                 </td>
                                                 <td>
-                                                    <?= $satuan_produk['nama_satuan'] ?>
+                                                    <?= $user_pending['nama'] ?>
+                                                </td>
+                                                <td>
+                                                    <?= $user_pending['tempat_lahir'] ?>
+                                                    <?= tgl_indo($user_pending['tgl_lahir']) ?>
+                                                </td>
+                                                <td>
+                                                    <?= $user_pending['jenis_kelamin'] ?>
+                                                </td>
+                                                <td class="text-center">
+                                                    <img src="../asset/img/<?=$user_pending['image_profile'] ?>" width="150px" alt="">
+                                                    <!-- <img src="../asset/img/640b1c894bc84.jpg" width="150px" alt=""> -->
+                                                </td>
+                                                <td>
+                                                    <?= $user_pending['nomor_telpon'] ?>
+                                                </td>
+                                                <td>
+                                                    <?= $user_pending['alamat'] ?>
                                                 </td>
                                                 <td class="align-middle text-center">
-                                                    <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalUbah<?= $satuan_produk['id']; ?>"><i class="fas fa-user-edit"></i></button>
-                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalHapus<?= $satuan_produk['id']; ?>"><i class="fas fa-trash-alt"></i></button>
+                                                    <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalUbah<?= $user_pending['username']; ?>"><i class="fas fa-user-edit"></i></button>
+                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalHapus<?= $user_pending['username']; ?>"><i class="fas fa-trash-alt"></i></button>
                                                 </td>
                                             </tr>
                                             <?php
@@ -95,8 +120,8 @@ $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
 
                                             ?>
                                     </tbody>
-                                    <!-- Start delete modal -->
-                                    <div class="modal fade-costum" id="modalHapus<?= $satuan_produk['id']; ?>" role="dialog">
+                                    <!-- Start hapus modal -->
+                                    <div class="modal fade-costum" id="modalHapus<?= $user_pending['username']; ?>" role="dialog">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -106,11 +131,12 @@ $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
                                                 <div class="modal-body">
                                                     <form role="form" action="" method="POST" autocomplete="off">
                                                         <?php
-                                                        $id = $satuan_produk['id'];
-                                                        $edits = query_data("SELECT * FROM tbl_satuan_produk WHERE id='$id'");
+                                                        $username = $user_pending['username'];
+                                                        $edits = query_data("SELECT * FROM tbl_user WHERE username='$username'");
                                                         foreach ($edits as $edit) :
                                                         ?>
-                                                            <input type="hidden" name="id" value="<?= $edit['id']; ?>">
+                                                            <input type="hidden" name="username" value="<?= $edit['username']; ?>">
+                                                            <input type="hidden" name="image_profile" value="<?= $edit['image_profile']; ?>">
                                                             <p>Yakin untuk menghapus data ?</p>
                                                             <div class="flex text-center mt-4 mb-3">
                                                                 <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Batal</button>
@@ -124,33 +150,27 @@ $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- End delete modal -->
+                                    <!-- End hapus modal -->
 
                                     <!-- Start ubah modal -->
-                                    <div class="modal fade-costum" id="modalUbah<?= $satuan_produk['id']; ?>" role="dialog">
+                                    <div class="modal fade-costum" id="modalUbah<?= $user_pending['username']; ?>" role="dialog">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Ubah Data</h5>
+                                                    <h5 class="modal-title">Activasi Akun Seller</h5>
                                                     <button type="button" data-bs-dismiss="modal" class="btn-close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <form role="form" action="" method="POST" autocomplete="off">
                                                         <?php
-                                                        $id = $satuan_produk['id'];
-                                                        $edits = query_data("SELECT * FROM tbl_satuan_produk WHERE id='$id'");
+                                                        $username = $user_pending['username'];
+                                                        $edits = query_data("SELECT * FROM tbl_user WHERE username='$username'");
                                                         foreach ($edits as $edit) :
                                                         ?>
-                                                        <input type="hidden" name="id" value="<?=$edit['id']?>">
-                                                            <div class="form-group row mt-3">
-                                                                <label class="col-4 col-form-label">Nama Satuan Produk</label>
-                                                                <div class="col-8">
-                                                                    <input type="text" class="form-control" name="nama_satuan" value="<?= $edit['nama_satuan']?>">
-                                                                </div>
-                                                            </div>
+                                                            <input type="hidden" name="username" value="<?= $edit['username']; ?>">
                                                             <div class="flex text-center mt-4 mb-3">
                                                                 <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Batal</button>
-                                                                <button type="submit" name="ubah" class="btn btn-info ml-2">Ubah</button>
+                                                                <button type="submit" name="ubah" class="btn btn-info ml-2">Aktifkan</button>
                                                             </div>
                                                         <?php
                                                         endforeach
@@ -164,33 +184,6 @@ $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
                                 <?php
                                         endforeach;
                                 ?>
-
-                                <!-- Start modal tambah data -->
-                                <div class="modal modal-custom fade" id="daftar-data" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Tambah Data</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form method="post" action="#" autocomplete="off" id="daftarForm">
-                                                    <div class="form-group row mt-3">
-                                                        <label class="col-3 col-form-label">Nama Satuan</label>
-                                                        <div class="col">
-                                                            <input type="text" class="form-control" name="nama_satuan" required placeholder="Nama Satuan">
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-center mt-3 mb-2">
-                                                        <button type="submit" name="tambah" class="btn btn-primary">Tambah</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End modal -->
-
                                 </table>
                             </div>
                         </div>
@@ -222,52 +215,20 @@ $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
     <?php
     require 'views/modalLogout.php';
     require 'views/script.php';
-    if (isset($_POST['tambah'])) {
-        if (tambah_satuan_produk($_POST) > 0) {
-            echo '
-                <script type="text/javascript">
-                    swal({
-                        title: "Berhasil",
-                        text: "Berhasil Ditambahkan",
-                        icon: "success",
-                        showConfirmButton: true,
-                    }).then(function(isConfirm){
-                        if(isConfirm){
-                            window.location.replace("satuan_produk.php");
-                        }
-                    });
-                </script>
-                ';
-        } else {
-            echo '
-                <script type="text/javascript">
-                    swal({
-                        title: "Gagal",
-                        text: "Gagal Ditambahkan",
-                        icon: "error",
-                        showConfirmButton: true,
-                    }).then(function(isConfirm){
-                        if(isConfirm){
-                            window.location.replace("satuan_produk.php");
-                        }
-                    });
-                </script>
-                ';
-        }
-    }
 
-    if (isset($_POST['hapus'])) {
-        if (hapus_satuan_produk($_POST['id']) > 0) {
+    if (isset($_POST['ubah'])) {
+        
+        if (active_user($_POST) > 0) {
             echo '
                 <script type="text/javascript">
                     swal({
                         title: "Berhasil",
-                        text: "Berhasil Dihapus",
+                        text: "Berhasil Di Aktifkan",
                         icon: "success",
                         showConfirmButton: true,
                     }).then(function(isConfirm){
                         if(isConfirm){
-                            window.location.replace("satuan_produk.php");
+                            window.location.replace("user_pending.php");
                         }
                     });
                 </script>
@@ -282,7 +243,7 @@ $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
                         showConfirmButton: true,
                     }).then(function(isConfirm){
                         if(isConfirm){
-                            window.location.replace("satuan_produk.php");
+                            window.location.replace("user_pending.php");
                         }
                     });
                 </script>
@@ -290,18 +251,18 @@ $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
         }
     }
 
-    if (isset($_POST['ubah'])) {
-        if (ubah_satuan_produk($_POST) > 0) {
+    if (isset($_POST['hapus'])) {
+        if (hapus_user($_POST) > 0) {
             echo '
                 <script type="text/javascript">
                     swal({
                         title: "Berhasil",
-                        text: "Berhasil Diubah",
+                        text: "Berhasil Dihapus",
                         icon: "success",
                         showConfirmButton: true,
                     }).then(function(isConfirm){
                         if(isConfirm){
-                            window.location.replace("satuan_produk.php");
+                            window.location.replace("user_pending.php");
                         }
                     });
                 </script>
@@ -311,12 +272,12 @@ $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
                 <script type="text/javascript">
                     swal({
                         title: "Gagal",
-                        text: "Gagal Diubah",
+                        text: "Gagal Dihapus",
                         icon: "error",
                         showConfirmButton: true,
                     }).then(function(isConfirm){
                         if(isConfirm){
-                            window.location.replace("satuan_produk.php");
+                            window.location.replace("user_pending.php");
                         }
                     });
                 </script>

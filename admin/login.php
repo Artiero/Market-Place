@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset($_SESSION['username'])) {
+if (isset($_SESSION['username'])&& $_SESSION['role']== 'admin') {
     header('Location: index.php');
 }
 require 'function/function_login.php';
@@ -19,12 +19,12 @@ require 'function/function_login.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 
-<body>
+<body style="overflow-x: hidden;">
     <div class="row justify-content-center">
         <div class="col-xl-4">
             <div class="card mt-5 py-5 px-5">
                 <div class="card-body">
-                    <h5 class="card-title text-center mb-3">Login</h5>
+                    <h5 class="card-title text-center mb-3">Login Admin</h5>
                     <form action="" method="POST">
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Username</label>

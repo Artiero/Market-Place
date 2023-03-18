@@ -1,12 +1,22 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])&& $_SESSION['role']!= 'user'){
+    header('Location: signin.php');
+} elseif (isset($_SESSION['username'])&& $_SESSION['role']!= 'user'){
+    header('Location: signin.php');
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="asset/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">    
-    <link rel="stylesheet" href="asset/aos/css/aos.css">
+    <?php
+    require 'views/link.php';
+    ?>
     <title>Step 3</title>
 </head>
 <body class="container">
@@ -30,13 +40,14 @@
                     <p>Your order will be processed immediately</p>
                 </section>
                 <div class="btn-finish-step-3 text-center">
-                    <a href="index.html">Beranda</a>
+                    <a href="index.php">Beranda</a>
                 </div>
             </div>
         </section>
     </main>
-    <script src="asset/bootstrap/js/bootstrap.min.js"></script>
-    <script src="asset/aos/js/aos.js"></script>
+    <?php
+    require 'views/script.php';
+    ?>
     <script>
         AOS.init();
     </script>

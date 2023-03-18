@@ -2,10 +2,13 @@
 session_start();
 if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'admin') {
     header('Location: login.php');
+} elseif (isset($_SESSION['username'])&& $_SESSION['role'] != 'admin'){
+    header('Location: login.php');
 }
 require './function/global.php';
 require './function/function_admin.php';
 $admins = query_data('SELECT*FROM tbl_admin');
+$username = $_SESSION['username'];
 ?>
 
 <!DOCTYPE html>

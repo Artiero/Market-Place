@@ -2,10 +2,13 @@
 session_start();
 if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'admin') {
     header('Location: login.php');
+} elseif (isset($_SESSION['username'])&& $_SESSION['role'] != 'admin'){
+    header('Location: login.php');
 }
 require './function/global.php';
 require './function/function_satuan_produk.php';
 $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
+$username = $_SESSION['username'];
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +37,7 @@ $satuan_produks = query_data('SELECT*FROM tbl_satuan_produk');
 
         <!-- Sidebar -->
         <?php
-        $page = 4;
+        $page = 13;
         require 'views/sidebar.php';
         ?>
         <!-- End of Sidebar -->

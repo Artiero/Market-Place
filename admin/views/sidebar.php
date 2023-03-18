@@ -34,7 +34,7 @@
       <span>Kategori Produk</span></a>
   </li>
   <!-- Nav Item - Tables -->
-  <li class="nav-item <?= $page == 4 ? 'active' : '' ?>">
+  <li class="nav-item <?= $page == 13 ? 'active' : '' ?>">
     <a class="nav-link" href="satuan_produk.php">
       <i class="fas fa-fw fa-table"></i>
       <span>Satuan Produk</span></a>

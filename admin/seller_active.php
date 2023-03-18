@@ -1,11 +1,15 @@
 <?php
 session_start();
+session_start();
 if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'admin') {
+    header('Location: login.php');
+} elseif (isset($_SESSION['username'])&& $_SESSION['role'] != 'admin'){
     header('Location: login.php');
 }
 require './function/global.php';
 require './function/function_seller.php';
 $seller_actives = query_data("SELECT*FROM tbl_seller WHERE status='Active' ");
+$username = $_SESSION['username'];
 ?>
 
 <!DOCTYPE html>

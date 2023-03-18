@@ -2,10 +2,14 @@
 session_start();
 if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'admin') {
     header('Location: login.php');
+} elseif (isset($_SESSION['username'])&& $_SESSION['role'] != 'admin'){
+    header('Location: login.php');
 }
+
 require './function/global.php';
 require './function/function_jenis_bank.php';
 $jenis_banks = query_data('SELECT*FROM tbl_jenis_bank');
+$username = $_SESSION['username'];
 ?>
 
 <!DOCTYPE html>
@@ -82,9 +86,6 @@ $jenis_banks = query_data('SELECT*FROM tbl_jenis_bank');
                                             <tr>
                                                 <td>
                                                     <?= $no ?>
-                                                </td>
-                                                <td>
-                                                    <?= $jenis_bank['nama_bank'] ?>
                                                 </td>
                                                 <td>
                                                     <?= $jenis_bank['nama_bank'] ?>

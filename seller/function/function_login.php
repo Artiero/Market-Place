@@ -6,7 +6,7 @@ function login($data){
   $username = $data['username'];
   $password = $data['password'];
   // Perintah query sql
-  $query = "SELECT * FROM tbl_seller WHERE username='$username'";
+  $query = "SELECT * FROM tbl_seller WHERE username='$username' AND status='Active'";
   $get = mysqli_query($conn, $query);
   // Mengambil jumlah baris
   $result = mysqli_num_rows($get);

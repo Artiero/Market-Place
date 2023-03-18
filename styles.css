@@ -33,7 +33,7 @@ body{
     color: white;
 }
 header{
-    background-image: url('asset/img/bg.png');
+    background-image: url('./asset/img/bg.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -839,6 +839,7 @@ footer .copyright{
 }
 
 .btn-logout{
+    text-decoration: none;
     background-color: #C4C4C4;
     color: white;
     padding: 12px 63px;

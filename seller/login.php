@@ -1,8 +1,8 @@
 <?php
-// session_start();
-// if (isset($_SESSION['username'])) {
-//     header('Location: index.php');
-// }
+session_start();
+if (isset($_SESSION['username']) && $_SESSION['role']=='seller' ) {
+    header('Location: index.php');
+}
 require 'function/function_login.php';
 ?>
 <!DOCTYPE html>
@@ -12,19 +12,19 @@ require 'function/function_login.php';
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login Seller</title>
     <?php
     require 'views/link.php';
     ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 
-<body>
+<body style="overflow-x: hidden;">
     <div class="row justify-content-center">
         <div class="col-xl-4">
             <div class="card mt-5 py-5 px-5">
                 <div class="card-body">
-                    <h5 class="card-title text-center mb-3">Login</h5>
+                    <h5 class="card-title text-center mb-3">Login Seller</h5>
                     <form action="" method="POST">
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Username</label>
@@ -51,7 +51,7 @@ require 'function/function_login.php';
         $username = $_POST['username'];
         if (login($_POST) === true) {
             $_SESSION['username'] = $username;
-            $_SESSION['role'] = 'admin';
+            $_SESSION['role'] = 'seller';
             echo '
         <script type="text/javascript">
             swal({

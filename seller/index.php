@@ -1,5 +1,10 @@
 <?php
-
+session_start();
+if (!isset($_SESSION['username'])&& $_SESSION['role']!= 'seller'){
+    header('Location: login.php');
+} elseif (isset($_SESSION['username'])&& $_SESSION['role']!= 'seller'){
+    header('Location: login.php');
+}
 require '../admin/function/global.php';
 ?>
 
@@ -14,7 +19,7 @@ require '../admin/function/global.php';
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title>Seller - Dashboard</title>
 
     <!-- Custom fonts for this template-->
     <?php

@@ -1,6 +1,40 @@
 <?php
 require 'connection.php';
 
+function total_account_admin(){
+    global $conn;
+    $cekData = mysqli_query($conn,"SELECT*FROM tbl_admin ");
+    $resultData = mysqli_num_rows($cekData);
+
+    return $resultData;
+}
+
+function user($data){
+    global $conn;
+    $cekData = mysqli_query($conn,"SELECT status FROM tbl_user WHERE status='$data' ");
+    $resultData = mysqli_num_rows($cekData);
+
+    return $resultData;
+}
+
+function seller($data){
+    global $conn;
+    $cekData = mysqli_query($conn,"SELECT status FROM tbl_seller WHERE status='$data' ");
+    $resultData = mysqli_num_rows($cekData);
+
+    return $resultData;
+}
+
+function data($table){
+    global $conn;
+    $cekData = mysqli_query($conn,"SELECT * FROM $table ");
+    
+    $resultData = mysqli_num_rows($cekData);
+    return $resultData;
+}
+
+
+
 function query_data($data)
 {
     global $conn;

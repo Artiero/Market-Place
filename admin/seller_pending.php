@@ -2,10 +2,13 @@
 session_start();
 if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'admin') {
     header('Location: login.php');
+} elseif (isset($_SESSION['username'])&& $_SESSION['role'] != 'admin'){
+    header('Location: login.php');
 }
 require './function/global.php';
 require './function/function_seller.php';
 $seller_pendings = query_data("SELECT*FROM tbl_seller WHERE status='Unactive' ");
+$username = $_SESSION['username'];
 // var_dump($seller_pendings)
 ?>
 

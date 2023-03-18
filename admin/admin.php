@@ -6,6 +6,9 @@ if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'admin') {
 require './function/global.php';
 require './function/function_admin.php';
 $admins = query_data('SELECT*FROM tbl_admin');
+$username = $_SESSION['username'];
+// var_dump($username);
+
 ?>
 
 <!DOCTYPE html>
@@ -91,7 +94,15 @@ $admins = query_data('SELECT*FROM tbl_admin');
                                                 </td>
                                                 <td class="align-middle text-center">
                                                     <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalUbah<?= $admin['username']; ?>"><i class="fas fa-user-edit"></i></button>
+                                                    <?php
+                                                    // var_dump($_SESSION['username']);
+                                                        if($_SESSION['username'] !== $admin['username']){
+                                                    ?>
                                                     <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalHapus<?= $admin['username']; ?>"><i class="fas fa-trash-alt"></i></button>
+                                                    <?php
+                                                        } 
+                                                        
+                                                    ?>
                                                 </td>
                                             </tr>
                                             <?php
