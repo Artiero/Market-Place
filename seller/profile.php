@@ -5,11 +5,13 @@ if (!isset($_SESSION['username']) && $_SESSION['role'] != 'seller') {
 } elseif (isset($_SESSION['username']) && $_SESSION['role'] != 'seller') {
     header('Location: login.php');
 }
-require 'function/global.php';
+
+require 'function/function_profile.php';
+
+$jenis_banks = query_data('SELECT singkatan FROM tbl_jenis_bank');
 $username = $_SESSION['username'];
-$jenis_banks = query_data('SELECT*FROM tbl_jenis_bank');
 $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
-// var_dump($sellers);
+// var_dump($jenis_banks);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,25 +61,26 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
                     <div class="card shadow mb-4 px-5 py-4">
                         <?php
                         foreach ($sellers as $seller) :
+                            // var_dump($seller['image_profile']);
                         ?>
                             <form action="" method="POST" enctype="multipart/form-data">
                                 <div class="text-center my-3">
-                                    <img src="img/<?= $seller['image_profile'] ?>" width="300px" alt="">
+                                    <img src="../asset/img/ <?= $seller['image_profile'] ?>" width="300px" alt="">
                                 </div>
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group row mt-3">
-                                            <label class="col-2 col-form-label">Name</label>
+                                            <label class="col-3 col-form-label">Name</label>
                                             <div class="col">
                                                 <input type="hidden" name="username" value="<?= $seller['username'] ?>">
                                                 <input type="hidden" name="image_lama" value="<?= $seller['image_profile'] ?>">
-                                                <input type="text" name="nama" value="<?= $seller['name'] ?>" class="form-control" placeholder="Name">
+                                                <input type="text" name="nama" value="<?= $seller['nama'] ?>" class="form-control" placeholder="Name">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group row mt-3">
-                                            <label class="col-2 col-form-label">Tempat Lahir</label>
+                                            <label class="col-3 col-form-label">Tempat Lahir</label>
                                             <div class="col">
                                                 <input type="text" name="tempat_lahir" value="<?= $seller['tempat_lahir'] ?>" class="form-control" placeholder="Tempat Lahir">
                                             </div>
@@ -87,20 +90,28 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group row mt-3">
-                                            <label class="col-2 col-form-label">Tanggal Lahir</label>
+                                            <label class="col-3 col-form-label">Tanggal Lahir</label>
                                             <div class="col">
-                                                <input type="date" name="tempat_lahir" value="<?= $seller['tgl_lahir'] ?>" class="form-control" placeholder="Tanggal Lahir">
+                                                <input type="date" name="tgl_lahir" value="<?= $seller['tgl_lahir'] ?>" class="form-control" placeholder="Tanggal Lahir">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group row mt-3">
-                                            <label class="col-2 col-form-label">Jenis Kelamin</label>
+                                            <label class="col-3 col-form-label">Jenis Kelamin</label>
                                             <div class="col">
                                                 <select name="jenis_kelamin" id="" class="form-control">
-                                                    <option selected>--Pilih---</option>
-                                                    <option value="<?= $seller['jenis_kelamin'] ?>">Laki-laki</option>
-                                                    <option value="<?= $seller['jenis_kelamin'] ?>">Perempuan</option>
+                                                    <option selected><?= $seller['jenis_kelamin'] ?></option>
+                                                    <?php
+                                                    $edits = query_data("SELECT jenis_kelamin FROM tbl_seller WHERE username!='$username'");
+                                                    foreach ($edits as $edit) :
+                                                    ?>
+
+                                                    <option value="<?= $edit['jenis_kelamin']?>"><?= $edit['jenis_kelamin']?></option>
+                                                    
+                                                    <?php
+                                                    endforeach
+                                                    ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -109,7 +120,7 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group row mt-3">
-                                            <label class="col-2 col-form-label">Image Profile</label>
+                                            <label class="col-3 col-form-label">Image Profile</label>
                                             <div class="col">
                                                 <input type="file" name="image_profile" class="form-control">
                                             </div>
@@ -117,7 +128,7 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
                                     </div>
                                     <div class="col">
                                         <div class="form-group row mt-3">
-                                            <label class="col-2 col-form-label">No Telpon</label>
+                                            <label class="col-3 col-form-label">No Telpon</label>
                                             <div class="col">
                                                 <input type="text" name="nomor_telpon" value="<?= $seller['nomor_telpon'] ?>" class="form-control" placeholder="+62081xxxxx">
                                             </div>
@@ -127,7 +138,7 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group row mt-3">
-                                            <label class="col-2 col-form-label">Alamat</label>
+                                            <label class="col-3 col-form-label">Alamat</label>
                                             <div class="col">
                                                 <textarea name="alamat" class="form-control" cols="30" rows="3"><?= $seller['alamat'] ?></textarea>
                                             </div>
@@ -135,7 +146,7 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
                                     </div>
                                     <div class="col">
                                         <div class="form-group row mt-3">
-                                            <label class="col-2 col-form-label">Nama Bank</label>
+                                            <label class="col-3 col-form-label">Nama Bank</label>
                                             <div class="col">
                                                 <input type="text" name="nama_bank" value="<?= $seller['nama_bank'] ?>" class="form-control" placeholder="Nama Bank">
                                             </div>
@@ -145,36 +156,38 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group row mt-3">
-                                            <label class="col-2 col-form-label">Nomor Rekening</label>
+                                            <label class="col-3 col-form-label">Nomor Rekening</label>
                                             <div class="col">
-                                                <input type="number" name="nomor_rekening" value="<?= $seller['nomor_rekening'] ?>" class="form-control" placeholder="Nama Bank">
+                                                <input type="number" name="nomor_rekening" value="<?= $seller['nomor_rekening'] ?>" class="form-control" placeholder="Nama Rekening">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group row mt-3">
-                                            <label class="col-2 col-form-label">Jenis Bank</label>
+                                            <label class="col-3 col-form-label">Jenis Bank</label>
                                             <div class="col">
                                                 <select name="jenis_bank" id="jenis_bank" class="form-control">
                                                     <option selected><?= $seller['jenis_bank'] ?></option>
                                                     <?php
-                                                    $jenis_banks = query_data('SELECT*FROM tbl_jenis_bank');
+                                                    $bank = $seller['jenis_bank'];
+                                                    $jenis_banks = query_data("SELECT * FROM tbl_jenis_bank WHERE singkatan!='$bank'");
                                                     foreach ($jenis_banks as $jenis_bank) :
                                                     ?>
                                                         <option value="<?= $jenis_bank['singkatan'] ?>"><?= $jenis_bank['singkatan'] ?></option>
                                                     <?php
                                                     endforeach;
                                                     ?>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <div class="form-group row mt-3">
-                                            <label class="col-1 col-form-label">Passwor</label>
+                                        <div class="form-group row-cols-2 mt-3">
+                                            <label class="col-3 col-form-label">Passaword</label>
                                             <div class="col">
-                                                <input type="password" name="password" class="form-control" placeholder="password">
+                                                <input type="password" name="password" class="form-control" placeholder="Password">
                                             </div>
                                         </div>
                                     </div>
@@ -187,21 +200,20 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
                         endforeach;
                         ?>
                     </div>
-
                 </div>
                 <!-- /.container-fluid -->
-
             </div>
+
             <!-- End of Main Content -->
 
             <?php
             require 'views/footer.php'
             ?>
-
         </div>
-        <!-- End of Content Wrapper -->
 
     </div>
+    <!-- End of Content Wrapper -->
+
     <!-- End of Page Wrapper -->
 
     <!-- Scroll to Top Button-->
@@ -212,37 +224,40 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
     <?php
     require 'views/modalLogout.php';
     require 'views/script.php';
-    // if (isset($_POST['ubah'])) {
-    //     echo '
-    //             <script type="text/javascript">
-    //                 swal({
-    //                     title: "Berhasil",
-    //                     text: "Berhasil Diubah",
-    //                     icon: "success",
-    //                     showConfirmButton: true,
-    //                 }).then(function(isConfirm){
-    //                     if(isConfirm){
-    //                         window.location.replace("profile.php");
-    //                     }
-    //                 });
-    //             </script>
-    //         ';
-    //     } else {
-    //     echo '
-    //             <script type="text/javascript">
-    //                 swal({
-    //                     title: "Gagal",
-    //                     text: "Gagal Diubah",
-    //                     icon: "error",
-    //                     showConfirmButton: true,
-    //                 }).then(function(isConfirm){
-    //                     if(isConfirm){
-    //                         window.location.replace("profile.php");
-    //                     }
-    //                 });
-    //             </script>
-    //         ';
-    // }
+    if (isset($_POST['ubah'])) {
+        // var_dump($_POST);
+        if (ubah_data_profile($_POST) > 0) {
+            echo '
+                <script type="text/javascript">
+                    swal({
+                        title: "Berhasil",
+                        text: "Berhasil Diubah",
+                        icon: "success",
+                        showConfirmButton: true,
+                    }).then(function(isConfirm){
+                        if(isConfirm){
+                            window.location.replace("profile.php");
+                        }
+                    });
+                </script>
+            ';
+        } else {
+            echo '
+                <script type="text/javascript">
+                    swal({
+                        title: "Gagal",
+                        text: "Gagal Diubah",
+                        icon: "error",
+                        showConfirmButton: true,
+                    }).then(function(isConfirm){
+                        if(isConfirm){
+                            window.location.replace("profile.php");
+                        }
+                    });
+                </script>
+            ';
+        }
+    }
     ?>
 </body>
 

@@ -6,6 +6,7 @@ if (!isset($_SESSION['username'])&& $_SESSION['role']!= 'seller'){
     header('Location: login.php');
 }
 require '../admin/function/global.php';
+$username = $_SESSION['username'];
 ?>
 
 <!DOCTYPE html>
