@@ -1,12 +1,13 @@
 <?php
 session_start();
-if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'admin') {
+if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'seller') {
     header('Location: login.php');
-} elseif (isset($_SESSION['username'])&& $_SESSION['role'] != 'admin'){
+} elseif (isset($_SESSION['username'])&& $_SESSION['role'] != 'seller'){
     header('Location: login.php');
 }
 require './function/global.php';
-$belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'");
+// require './function/function_admin.php';
+$admins = query_data('SELECT*FROM tbl_admin');
 $username = $_SESSION['username'];
 ?>
 
@@ -21,7 +22,7 @@ $username = $_SESSION['username'];
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Transaksi</title>
+    <title>Admin</title>
 
     <?php
     require 'views/link.php';
@@ -36,7 +37,7 @@ $username = $_SESSION['username'];
 
         <!-- Sidebar -->
         <?php
-        $page = 9;
+        $page = 5;
         require 'views/sidebar.php';
         ?>
         <!-- End of Sidebar -->
@@ -57,81 +58,43 @@ $username = $_SESSION['username'];
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Transaksi</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Admin</h1>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Data Transaksi</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Data Admin</h6>
                         </div>
                         <div class="card-body">
+                            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#daftar-data"><i class="fas fa-user-plus mr-2"></i>Tambah</button>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Kode Transaksi</th>
-                                            <th>Tanggal Transaksi</th>
-                                            <th>Produk</th>
-                                            <th>Bukti Pembayaran</th>
-                                            <th>Jumlah Produk</th>
-                                            <th>Sub Harga</th>
-                                            <th>Kode Unik</th>
-                                            <th>Total Harga</th>
-                                            <th>Username User</th>
-                                            <th>Nama User</th>
-                                            <th>Username Seller</th>
-                                            <th>Nama Seller</th>
-                                            <th>Status</th>
+                                            <th>Username</th>
+                                            <th>Name</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        foreach ($belum_bayars as $belum_bayar) :
+                                        foreach ($admins as $admin) :
                                         ?>
                                             <tr>
                                                 <td>
                                                     <?= $no ?>
                                                 </td>
                                                 <td>
-                                                    <?= $belum_bayar['kode_transaksi'] ?>
+                                                    <?= $admin['username'] ?>
                                                 </td>
                                                 <td>
-                                                    <?= tgl_indo($belum_bayar['tgl_transaksi']) ?>
+                                                    <?= $admin['nama'] ?>
                                                 </td>
-                                                <td>
-                                                    <?= $belum_bayar['produk'] ?>
-                                                </td>
-                                                <td>
-                                                    <?= $belum_bayar['img'] ?>
-                                                </td>
-                                                <td>
-                                                    <?= $belum_bayar['jumlah_produk'] ?>
-                                                </td>
-                                                <td>
-                                                    <?= rupiah($belum_bayar['sub_harga']) ?>
-                                                </td>
-                                                <td>
-                                                    <?= $belum_bayar['kode_unik'] ?>
-                                                </td>
-                                                <td>
-                                                    <?= rupiah($belum_bayar['total_harga']) ?>
-                                                </td>
-                                                <td>
-                                                    <?= $belum_bayar['username_user'] ?>
-                                                </td>
-                                                <td>
-                                                    <?= $belum_bayar['nama_user'] ?>
-                                                </td>
-                                                <td>
-                                                    <?= $belum_bayar['username_seller'] ?>
-                                                </td>
-                                                <td>
-                                                    <?= $belum_bayar['nama_seller'] ?>
-                                                </td>
-                                                <td>
-                                                    <?= $belum_bayar['status'] ?>
+                                                <td class="align-middle text-center">
+                                                    <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalUbah<?= $admin['username']; ?>"><i class="fas fa-user-edit"></i></button>
+                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalHapus<?= $admin['username']; ?>"><i class="fas fa-trash-alt"></i></button>
                                                 </td>
                                             </tr>
                                             <?php

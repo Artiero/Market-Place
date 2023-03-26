@@ -1,6 +1,17 @@
 <?php
 require './admin/function/connection.php';
 
+function query_data($data)
+{
+    global $conn;
+    $result = mysqli_query($conn, $data);
+    $rows = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $rows[] = $row;
+    }
+    return $rows;
+}
+
 function upload()
 {
     $namaFile = $_FILES['image_profile']['name'];
@@ -47,6 +58,12 @@ function upload()
     // 8sdfi989898.docx
     move_uploaded_file($tmpName, './asset/img/' . $namaFileBaru);
     return $namaFileBaru;
+}
+
+function rupiah($angka)
+{
+    $hasil_rupiah = "Rp " . number_format($angka, 0, ',', '.');
+    return $hasil_rupiah;
 }
 
 ?>

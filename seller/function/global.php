@@ -37,6 +37,53 @@ function tgl_indo($tanggal)
     return $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
 }
 
+function upload_produk()
+{
+    $namaFile = $_FILES['image_produk']['name'];
+    $ukuranFile = $_FILES['image_produk']['size'];
+    $error = $_FILES['image_produk']['error'];
+    $tmpName = $_FILES['image_produk']['tmp_name'];
+    // cek jika tidak ada gambar diupload
+
+    if ($error === 4) {
+        echo "
+            <script>
+                alert('Masukkan image');
+            </script>
+            ";
+        return false;
+    }
+    if ($ukuranFile > 5000000) {
+        echo "
+            <script>
+                alert('Tidak lebih dari 3mb');
+            </script>
+            ";
+        return false;
+    }
+    // cek yang boleh diupload
+    $ekstensiFileValid = ['jpg', 'png', 'jpeg', 'svg'];
+    $ekstensiFile = explode('.', $namaFile);
+    $ekstensiFile = strtolower(end($ekstensiFile));
+    if (!in_array($ekstensiFile, $ekstensiFileValid)) {
+        echo "
+            <script>
+                alert('Upload file berekstensi jpg, png, jpeg atau svg');
+            </script>
+            ";
+        return false;
+    }
+    // lolos pengecekan
+    //generate
+    $namaFileBaru = uniqid();
+    // 8sdfi989898
+    $namaFileBaru .= '.';
+    // 8sdfi989898.
+    $namaFileBaru .= $ekstensiFile;
+    // 8sdfi989898.docx
+    move_uploaded_file($tmpName, '../asset/img/' . $namaFileBaru);
+    return $namaFileBaru;
+}
 
 function upload()
 {
@@ -86,4 +133,8 @@ function upload()
     return $namaFileBaru;
 }
 
-?>
+function rupiah($angka)
+{
+    $hasil_rupiah = "Rp " . number_format($angka, 0, ',', '.');
+    return $hasil_rupiah;
+}

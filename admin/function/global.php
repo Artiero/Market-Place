@@ -33,7 +33,11 @@ function data($table){
     return $resultData;
 }
 
-
+function rupiah($angka)
+{
+    $hasil_rupiah = "Rp " . number_format($angka, 0, ',', '.');
+    return $hasil_rupiah;
+}
 
 function query_data($data)
 {

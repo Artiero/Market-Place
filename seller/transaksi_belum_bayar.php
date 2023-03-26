@@ -1,13 +1,13 @@
 <?php
 session_start();
-if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'admin') {
+if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'seller') {
     header('Location: login.php');
-} elseif (isset($_SESSION['username'])&& $_SESSION['role'] != 'admin'){
+} elseif (isset($_SESSION['username'])&& $_SESSION['role'] != 'seller'){
     header('Location: login.php');
 }
 require './function/global.php';
-$belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'");
 $username = $_SESSION['username'];
+$belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar' AND username_seller='$username' ");
 ?>
 
 <!DOCTYPE html>
@@ -73,7 +73,7 @@ $username = $_SESSION['username'];
                                             <th>Kode Transaksi</th>
                                             <th>Tanggal Transaksi</th>
                                             <th>Produk</th>
-                                            <th>Bukti Pembayaran</th>
+                                            <th>Image Produk</th>
                                             <th>Jumlah Produk</th>
                                             <th>Sub Harga</th>
                                             <th>Kode Unik</th>

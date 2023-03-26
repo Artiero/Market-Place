@@ -27,9 +27,14 @@ function ubah_data_admin($data)
     $password = $data['password'];
     $hash_password = password_hash($password, PASSWORD_DEFAULT);
     if($password==''){
-        mysqli_query($conn, "UPDATE tbl_admin SET nama='$nama' WHERE username='$username'");
+        mysqli_query($conn, "UPDATE tbl_admin SET
+        nama='$nama'
+        WHERE username='$username'");
     }else{
-        mysqli_query($conn, "UPDATE tbl_admin SET nama='$nama', password='$hash_password' WHERE username='$username'");
+        mysqli_query($conn, "UPDATE tbl_admin SET 
+        nama='$nama',
+        password='$hash_password'
+        WHERE username='$username'");
     }
     return mysqli_affected_rows($conn);
 }

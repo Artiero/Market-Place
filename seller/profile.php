@@ -65,7 +65,7 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
                         ?>
                             <form action="" method="POST" enctype="multipart/form-data">
                                 <div class="text-center my-3">
-                                    <img src="../asset/img/ <?= $seller['image_profile'] ?>" width="300px" alt="">
+                                    <img src="../asset/img/<?= $seller['image_profile'] ?> "width="300px" alt="gambar">
                                 </div>
                                 <div class="row">
                                     <div class="col">
@@ -101,17 +101,20 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
                                             <label class="col-3 col-form-label">Jenis Kelamin</label>
                                             <div class="col">
                                                 <select name="jenis_kelamin" id="" class="form-control">
-                                                    <option selected><?= $seller['jenis_kelamin'] ?></option>
-                                                    <?php
-                                                    $edits = query_data("SELECT jenis_kelamin FROM tbl_seller WHERE username!='$username'");
-                                                    foreach ($edits as $edit) :
-                                                    ?>
-
-                                                    <option value="<?= $edit['jenis_kelamin']?>"><?= $edit['jenis_kelamin']?></option>
                                                     
                                                     <?php
-                                                    endforeach
+                                                        if ( $seller['jenis_kelamin'] == 'Laki-laki') {
                                                     ?>
+                                                        <option value=Laki-laki>Laki-laki</option>
+                                                        <option value=Perempuan>Perempuan</option>
+                                                        <?php
+                                                        } else {
+                                                            ?>
+                                                            <option value="Perempuan">Perempuan</option>
+                                                            <option value="Laki-Laki">Laki-laki</option>
+                                                            <?php
+                                                        }
+                                                        ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -183,8 +186,8 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col">
-                                        <div class="form-group row-cols-2 mt-3">
+                                    <div class="col-6">
+                                        <div class="form-group row mt-3">
                                             <label class="col-3 col-form-label">Passaword</label>
                                             <div class="col">
                                                 <input type="password" name="password" class="form-control" placeholder="Password">
@@ -192,6 +195,7 @@ $sellers = query_data("SELECT*FROM tbl_seller WHERE username = '$username' ");
                                         </div>
                                     </div>
                                 </div>
+                                
                                 <div class="text-center my-3">
                                     <button class="btn btn-info" type="submit" name="ubah">Update Profile</button>
                                 </div>

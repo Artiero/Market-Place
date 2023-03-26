@@ -83,7 +83,7 @@
         <h6 class="collapse-header">Status seller:</h6>
         <a class="collapse-item <?= $page == 9 ? 'active' : '' ?>" href="transaksi_belum_bayar.php">Belum Bayar</a>
         <a class="collapse-item <?= $page == 10 ? 'active' : '' ?>" href="transaksi_sudah_bayar.php">Sudah Bayar</a>
-        <a class="collapse-item <?= $page == 11 ? 'active' : '' ?>" href="transaksi_pengriman.php">Pengiriman</a>
+        <a class="collapse-item <?= $page == 11 ? 'active' : '' ?>" href="transaksi_pengiriman.php">Pengiriman</a>
         <a class="collapse-item <?= $page == 12 ? 'active' : '' ?>" href="transaksi_diterima.php">Diterima</a>
       </div>
     </div>
