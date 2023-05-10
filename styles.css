@@ -693,7 +693,7 @@ footer .copyright {
     margin-bottom: 50px;
 }
 
-.step-2 .btn-finish-step-2 a {
+.step-2 .btn-finish-step-2 .btn-checkout-detail {
     border: none;
     color: white;
     background-color: #FEA319;
@@ -704,7 +704,7 @@ footer .copyright {
     transition: 0.5s all;
 }
 
-.step-2 .btn-finish-step-2 a:hover {
+.step-2 .btn-finish-step-2 .btn-checkout-detail:hover {
     background-color: #fcbb58;
 }
 

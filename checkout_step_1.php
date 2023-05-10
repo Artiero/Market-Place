@@ -1,11 +1,22 @@
 <?php
 session_start();
-if (!isset($_SESSION['username'])&& $_SESSION['role']!= 'user'){
-    header('Location: signin.php');
-} elseif (isset($_SESSION['username'])&& $_SESSION['role']!= 'user'){
-    header('Location: signin.php');
+if (!isset($_SESSION['username']) && $_SESSION['role'] != 'user') {
+    header('Location: login.php');
+} elseif (isset($_SESSION['username']) && $_SESSION['role'] != 'user') {
+    header('Location: login.php');
 }
 
+require 'function/global.php';
+$kode_transaksi = $_GET['kode_transaksi'];
+// var_dump($kode_transaksi);
+$cekNama = mysqli_query($conn, "SELECT*FROM tbl_transaksi WHERE kode_transaksi='$kode_transaksi'");
+$resultNama = mysqli_fetch_assoc($cekNama);
+
+$seller = query_data("SELECT tbl_seller.jenis_bank,
+tbl_seller.nomor_rekening
+FROM tbl_seller INNER JOIN tbl_transaksi 
+ON tbl_seller.username = tbl_transaksi.username_seller WHERE tbl_transaksi.kode_transaksi = '$kode_transaksi' ");
+// var_dump($seller);
 ?>
 
 <!DOCTYPE html>
@@ -35,18 +46,18 @@ if (!isset($_SESSION['username'])&& $_SESSION['role']!= 'user'){
         <section class="row justify-content-center">
             <div class="col-10 col-sm-10 col-md-8 col-lg-6 col-xl-5 ">
                 <div class="card-product" data-aos="zoom-in-up" data-aos-duration="1000">
-                    <h1 class="title-transaksi">TRX-20220525</h1>
+                    <h1 class="title-transaksi"><?= $resultNama['kode_transaksi'] ?></h1>
                     <div class="row">
                         <div class="col">
                             <div>
-                                <h2 class="title-product">Rojo Lele</h2>
+                                <h2 class="title-product"><?= $resultNama['produk'] ?></h2>
                             </div>
                             <div>
-                                <h3 class="quantity-product">3 kg</h3>
+                                <h3 class="quantity-product"><?= $resultNama['jumlah_produk'] ?></h3>
                             </div>
                         </div>
                         <div class="col align-self-center">
-                            <h2 class="sub-total">Rp. 350.000</h2>
+                            <h2 class="sub-total"><?= rupiah($resultNama['sub_harga']) ?></h2>
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -54,7 +65,7 @@ if (!isset($_SESSION['username'])&& $_SESSION['role']!= 'user'){
                             <h3 class="title-kode-unik">Kode Unik</h3>
                         </div>
                         <div class="col">
-                            <h4 class="kode-unik">315</h4>
+                            <h4 class="kode-unik"><?= $resultNama['kode_unik'] ?></h4>
                         </div>
                     </div>
                     <hr>
@@ -68,7 +79,7 @@ if (!isset($_SESSION['username'])&& $_SESSION['role']!= 'user'){
                             </div>
                         </div>
                         <div class="col align-self-center">
-                            <h5 class="total-price">Rp. 350.315</h5>
+                            <h5 class="total-price"><?= rupiah($resultNama['total_harga']) ?></h5>
                         </div>
                     </div>
                     <div class="rekening d-flex">
@@ -76,8 +87,8 @@ if (!isset($_SESSION['username'])&& $_SESSION['role']!= 'user'){
                             <img src="asset/img/icon_bank.png" width="40px" alt="">
                         </div>
                         <div class="desk-rekening">
-                            <h6 class="nama-penjual">M. Ardi</h6>
-                            <p class="rek-penjual">BRI - 0291302103921</p>
+                            <h6 class="nama-penjual"><?= $resultNama['nama_seller'] ?></h6>
+                            <p class="rek-penjual"><?= $seller[0]['jenis_bank'] ?> - <?= $seller[0]['nomor_rekening'] ?></p>
                         </div>
                     </div>
                 </div>
@@ -89,7 +100,7 @@ if (!isset($_SESSION['username'])&& $_SESSION['role']!= 'user'){
                     </div>
                     <div class="col">
                         <div class="btn-paid-step-1 text-center" data-aos="zoom-in-up" data-aos-duration="1000">
-                            <a href="checkout_step_2.php">Paid</a>
+                            <a href="checkout_step_2.php?kode_transaksi=<?= $kode_transaksi?>">Paid</a>
                         </div>
                     </div>
                 </div>

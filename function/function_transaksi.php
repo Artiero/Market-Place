@@ -24,6 +24,7 @@ function kode_transaksi() {
 function transaksi($data){
 
     global $conn;
+    $id_produk = $data['id'];
     $kode_transaksi = kode_transaksi();
     $nama_produk = $data['produk'];
     $tgl_transaksi = date("Y-m-d");
@@ -33,8 +34,9 @@ function transaksi($data){
     $username_user = $data ['username_user'];
     $nama_user = $data ['nama_user'];
     $harga_produk = $data['sub_harga'];
+    $sub_harga = $jumlah_produk * $harga_produk;
     $kode_unik = rand(1,300);
-    $sub_total = $harga_produk * $jumlah_produk;
+    $total = $sub_harga + $kode_unik;
     // var_dump($tgl_transaksi);
     
 
@@ -43,10 +45,13 @@ function transaksi($data){
     '$tgl_transaksi',
     '$nama_produk',
     '',
+    '',
+    '',
+    '',
     $jumlah_produk,
-    $harga_produk,    
+    $sub_harga,    
     $kode_unik,
-    $sub_total,
+    $total,
     '$username_user',
     '$nama_user',
     '$username_seller',
@@ -54,7 +59,13 @@ function transaksi($data){
     'Belum Bayar'
     )");
     
-    return mysqli_affected_rows($conn);
+
+    mysqli_query($conn, "UPDATE tbl_produk SET
+    jumlah_produk = jumlah_produk - $jumlah_produk
+    WHERE id = $id_produk ");
+
+    // return mysqli_affected_rows($conn);
+    return [mysqli_affected_rows($conn),$kode_transaksi];
     
 
     
@@ -63,7 +74,33 @@ function transaksi($data){
 
 
 
+function pembayaran($data){
+    global $conn;
+    $kode_transaksi = $data['kode_transaksi'];
+    $nama_pengirim = $data['nama_pengirim'];
+    $alamat = $data['alamat'];
+    $nomor_telpon = $data['nomor_telpon'];
+    if ($_FILES['img']['error'] === 4) {
+        $file = ['img'];
+    } else {
+        $file = upload_pembayaran();
+    }
+    
+    // var_dump($_FILES);
+    mysqli_query($conn, "UPDATE tbl_transaksi SET
+    img='$file',
+    nama_pengirim='$nama_pengirim',
+    alamat='$alamat',
+    nomor_telpon='$nomor_telpon',
+    status='Sudah Bayar'
+    WHERE kode_transaksi='$kode_transaksi' ");
+    return [mysqli_affected_rows($conn),$kode_transaksi];
+}
 
+function diterima($data){
+    global $conn;
+    $kode_transaksi = $data['kode_transaksi'];
 
-
-?>
+    mysqli_query($conn, "UPDATE tbl_transaksi SET status='Diterima' WHERE kode_transaksi='$kode_transaksi'");
+    return mysqli_affected_rows($conn);
+}

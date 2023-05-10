@@ -1,11 +1,12 @@
 <?php
 session_start();
-if (!isset($_SESSION['username'])&& $_SESSION['role']!= 'user'){
-    header('Location: signin.php');
-} elseif (isset($_SESSION['username'])&& $_SESSION['role']!= 'user'){
-    header('Location: signin.php');
+if (!isset($_SESSION['username']) && $_SESSION['role'] != 'user') {
+    header('Location: login.php');
+} elseif (isset($_SESSION['username']) && $_SESSION['role'] != 'user') {
+    header('Location: login.php');
 }
 
+$kode_transaksi = $_GET['kode_transaksi'];
 ?>
 
 <!DOCTYPE html>

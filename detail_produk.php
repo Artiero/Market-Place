@@ -6,11 +6,16 @@ if ($id_produk === NULL) {
 }
 
 require 'function/function_transaksi.php';
+
+
 $user = mysqli_query($conn, "SELECT * FROM tbl_user");
 $resultUser = mysqli_fetch_assoc($user);
+
 $produk_sellers = query_data("SELECT * FROM tbl_produk");
+
 $cekNama = mysqli_query($conn, "SELECT*FROM tbl_produk WHERE id='$id_produk'");
 $resultNama = mysqli_fetch_assoc($cekNama);
+
 $username = $resultNama['username_seller'];
 $sellers = query_data("SELECT * FROM tbl_seller WHERE username = '$username'");
 $details = query_data("SELECT tbl_produk.nama_produk,
@@ -81,6 +86,7 @@ ON tbl_seller.username = tbl_produk.username_seller WHERE tbl_produk.id!=$id_pro
                                 <input type="hidden" name="username_user" value="<?= $resultUser['username'] ?>">
                                 <input type="hidden" name="nama_seller" value="<?= $sellers[0]['nama'] ?>">
                                 <input type="hidden" name="username_seller" value="<?= $sellers[0]['username'] ?>">
+                                <input type="hidden" name="id" value="<?= $id_produk ?>">
 
                                 <h4>Start Checkout</h4>
                                 <p>Stock: <span class="stock"><?= $resultNama['jumlah_produk'] ?> <?= $resultNama['satuan_produk'] ?></span></p>
@@ -168,8 +174,9 @@ ON tbl_seller.username = tbl_produk.username_seller WHERE tbl_produk.id!=$id_pro
     require 'views/script.php';
 
     if (isset($_POST['checkout'])) {
+        $nilai_transaksi = transaksi($_POST);
         // var_dump($_POST);
-        if (transaksi($_POST) > 0) {
+        if ( $nilai_transaksi[0] > 0) {
             echo '
                 <script type="text/javascript">
                     swal({
@@ -179,7 +186,7 @@ ON tbl_seller.username = tbl_produk.username_seller WHERE tbl_produk.id!=$id_pro
                         showConfirmButton: true,
                     }).then(function(isConfirm){
                         if(isConfirm){
-                            window.location.replace("checkout_step_1.php");
+                            window.location.replace("checkout_step_1.php?kode_transaksi='.$nilai_transaksi[1].'");
                         }
                     });
                 </script>
@@ -201,6 +208,7 @@ ON tbl_seller.username = tbl_produk.username_seller WHERE tbl_produk.id!=$id_pro
                 ';
         }
     }
+
     ?>
     <script>
         AOS.init();

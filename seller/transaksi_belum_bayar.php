@@ -5,9 +5,15 @@ if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'seller') {
 } elseif (isset($_SESSION['username'])&& $_SESSION['role'] != 'seller'){
     header('Location: login.php');
 }
-require './function/global.php';
+
+require './function/function_transaksi.php';
 $username = $_SESSION['username'];
-$belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar' AND username_seller='$username' ");
+
+
+
+$cekProduk = mysqli_query($conn, "SELECT*FROM tbl_produk ");
+$resultProduk = mysqli_fetch_assoc($cekProduk);
+$belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar' AND username_seller='$username' ORDER BY tgl_transaksi DESC ");
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +42,7 @@ $belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'
 
         <!-- Sidebar -->
         <?php
-        $page = 9;
+        $page = 4;
         require 'views/sidebar.php';
         ?>
         <!-- End of Sidebar -->
@@ -73,7 +79,6 @@ $belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'
                                             <th>Kode Transaksi</th>
                                             <th>Tanggal Transaksi</th>
                                             <th>Produk</th>
-                                            <th>Image Produk</th>
                                             <th>Jumlah Produk</th>
                                             <th>Sub Harga</th>
                                             <th>Kode Unik</th>
@@ -83,6 +88,7 @@ $belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'
                                             <th>Username Seller</th>
                                             <th>Nama Seller</th>
                                             <th>Status</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -102,9 +108,6 @@ $belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'
                                                 </td>
                                                 <td>
                                                     <?= $belum_bayar['produk'] ?>
-                                                </td>
-                                                <td>
-                                                    <?= $belum_bayar['img'] ?>
                                                 </td>
                                                 <td>
                                                     <?= $belum_bayar['jumlah_produk'] ?>
@@ -133,6 +136,9 @@ $belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'
                                                 <td>
                                                     <?= $belum_bayar['status'] ?>
                                                 </td>
+                                                <td>
+                                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalHapus<?= $belum_bayar['kode_transaksi']; ?>"><i class="fas fa-trash-alt"></i></button>
+                                                </td>
                                             </tr>
                                             <?php
                                             $no++;
@@ -140,7 +146,7 @@ $belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'
                                             ?>
                                     </tbody>
                                     <!-- Start delete modal -->
-                                    <div class="modal fade-costum" id="modalHapus<?= $admin['username']; ?>" role="dialog">
+                                    <div class="modal fade-costum" id="modalHapus<?= $belum_bayar['kode_transaksi']; ?>" role="dialog">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -150,15 +156,17 @@ $belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'
                                                 <div class="modal-body">
                                                     <form role="form" action="" method="POST" autocomplete="off">
                                                         <?php
-                                                        $username = $admin['username'];
-                                                        $edits = query_data("SELECT * FROM tbl_admin WHERE username='$username'");
+                                                        $kode_transaksi = $belum_bayar['kode_transaksi'];
+                                                        $edits = query_data("SELECT * FROM tbl_transaksi WHERE kode_transaksi='$kode_transaksi'");
                                                         foreach ($edits as $edit) :
                                                         ?>
-                                                            <input type="hidden" name="username" value="<?= $edit['username']; ?>">
+                                                            <input type="hidden" name="kode_transaksi" value="<?= $edit['kode_transaksi'] ?>">
+                                                            <input type="hidden" name="jumlah_produk" value="<?= $edit['jumlah_produk'] ?>">
+                                                            <input type="hidden" name="produk" value="<?= $belum_bayar['produk'] ?>">
                                                             <p>Yakin untuk menghapus data ?</p>
                                                             <div class="flex text-center mt-4 mb-3">
                                                                 <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Batal</button>
-                                                                <button type="submit" name="hapus" class="btn btn-danger ml-2">Hapus</button>
+                                                                <button type="submit" name="hapus" class="btn btn-danger ml-2" >Hapus</button>
                                                             </div>
                                                         <?php
                                                         endforeach
@@ -169,53 +177,6 @@ $belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'
                                         </div>
                                     </div>
                                     <!-- End delete modal -->
-
-                                    <!-- Start ubah modal -->
-                                    <div class="modal fade-costum" id="modalUbah<?= $admin['username']; ?>" role="dialog">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Ubah Data</h5>
-                                                    <button type="button" data-bs-dismiss="modal" class="btn-close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form role="form" action="" method="POST" autocomplete="off">
-                                                        <?php
-                                                        $username = $admin['username'];
-                                                        $edits = query_data("SELECT * FROM tbl_admin WHERE username='$username'");
-                                                        foreach ($edits as $edit) :
-                                                        ?>
-                                                            <div class="form-group row mt-3">
-                                                                <label class="col-3 col-form-label">Username</label>
-                                                                <div class="col-9">
-                                                                    <input type="text" class="form-control" name="username" value="<?= $edit['username']?>" readonly>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group row mt-3">
-                                                                <label class="col-3 col-form-label">Nama</label>
-                                                                <div class="col-9">
-                                                                    <input type="text" class="form-control" name="nama" value="<?= $edit['nama']?>">
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group row mt-3">
-                                                                <label class="col-3 col-form-label">Password</label>
-                                                                <div class="col-9">
-                                                                    <input type="password" class="form-control" name="password">
-                                                                </div>
-                                                            </div>
-                                                            <div class="flex text-center mt-4 mb-3">
-                                                                <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Batal</button>
-                                                                <button type="submit" name="ubah" class="btn btn-info ml-2">Ubah</button>
-                                                            </div>
-                                                        <?php
-                                                        endforeach
-                                                        ?>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- End ubah modal -->
                                 <?php
                                         endforeach;
                                 ?>
@@ -324,7 +285,8 @@ $belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'
     }
 
     if (isset($_POST['hapus'])) {
-        if (hapus_data_admin($_POST['username']) > 0) {
+        // var_dump($_POST);
+        if (hapus_data_transaksi($_POST) > 0) {
             echo '
                 <script type="text/javascript">
                     swal({
@@ -334,7 +296,7 @@ $belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'
                         showConfirmButton: true,
                     }).then(function(isConfirm){
                         if(isConfirm){
-                            window.location.replace("admin.php");
+                            window.location.replace("transaksi_belum_bayar.php");
                         }
                     });
                 </script>
@@ -349,7 +311,7 @@ $belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'
                         showConfirmButton: true,
                     }).then(function(isConfirm){
                         if(isConfirm){
-                            window.location.replace("admin.php");
+                            window.location.replace("transaksi_belum_bayar.php");
                         }
                     });
                 </script>

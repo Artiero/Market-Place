@@ -6,7 +6,7 @@ if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'admin') {
     header('Location: login.php');
 }
 require './function/global.php';
-$belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar'");
+$belum_bayars = query_data("SELECT*FROM tbl_transaksi WHERE status='Belum Bayar' ORDER BY tgl_transaksi DESC");
 $username = $_SESSION['username'];
 ?>
 
@@ -57,12 +57,12 @@ $username = $_SESSION['username'];
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Transaksi</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Transaksi Belum Bayar</h1>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Data Transaksi</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Data Transaksi Belum Bayar</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -73,7 +73,6 @@ $username = $_SESSION['username'];
                                             <th>Kode Transaksi</th>
                                             <th>Tanggal Transaksi</th>
                                             <th>Produk</th>
-                                            <th>Bukti Pembayaran</th>
                                             <th>Jumlah Produk</th>
                                             <th>Sub Harga</th>
                                             <th>Kode Unik</th>
@@ -102,9 +101,6 @@ $username = $_SESSION['username'];
                                                 </td>
                                                 <td>
                                                     <?= $belum_bayar['produk'] ?>
-                                                </td>
-                                                <td>
-                                                    <?= $belum_bayar['img'] ?>
                                                 </td>
                                                 <td>
                                                     <?= $belum_bayar['jumlah_produk'] ?>

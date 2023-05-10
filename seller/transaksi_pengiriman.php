@@ -1,14 +1,13 @@
 <?php
 session_start();
-
-if (!isset($_SESSION['username'])&& $_SESSION['role'] != 'seller') {
+if (!isset($_SESSION['username']) && $_SESSION['role'] != 'seller') {
     header('Location: login.php');
-} elseif (isset($_SESSION['username'])&& $_SESSION['role'] != 'seller'){
+} elseif (isset($_SESSION['username']) && $_SESSION['role'] != 'seller') {
     header('Location: login.php');
 }
 require './function/global.php';
-$transaksi_pengirimans = query_data("SELECT*FROM tbl_transaksi WHERE status='Pengiriman'");
 $username = $_SESSION['username'];
+$sends = query_data("SELECT*FROM tbl_transaksi WHERE status='Pengiriman' AND username_seller='$username' ORDER BY tgl_transaksi DESC ");
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +21,7 @@ $username = $_SESSION['username'];
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Pengiriman</title>
+    <title>Transaksi</title>
 
     <?php
     require 'views/link.php';
@@ -58,23 +57,26 @@ $username = $_SESSION['username'];
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Pengiriman</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Transaksi</h1>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Data Pengiriman</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Data Transaksi</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
-                                    <tr>
+                                        <tr>
                                             <th>No</th>
                                             <th>Kode Transaksi</th>
                                             <th>Tanggal Transaksi</th>
                                             <th>Produk</th>
-                                            <th>Bukti Transaksi</th>
+                                            <th>Bukti Transfer</th>
+                                            <th>Nama Pengirim</th>
+                                            <th>Alamat Pengiriman</th>
+                                            <th>Nomor Telpon</th>
                                             <th>Jumlah Produk</th>
                                             <th>Sub Harga</th>
                                             <th>Kode Unik</th>
@@ -89,52 +91,59 @@ $username = $_SESSION['username'];
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        foreach ($transaksi_pengirimans as $transaksi_pengiriman) :
-                                            ?>
+                                        foreach ($sends as $send) :
+                                        ?>
                                             <tr>
-                                            <td>
+                                                <td>
                                                     <?= $no ?>
                                                 </td>
                                                 <td>
-                                                    <?= $transaksi_pengiriman['kode_transaksi'] ?>
+                                                    <?= $send['kode_transaksi'] ?>
                                                 </td>
                                                 <td>
-                                                    <?= $transaksi_pengiriman['tgl_transaksi'] ?>
-                                                    <?= tgl_indo($transaksi_pengiriman['tgl_transaksi']) ?>
+                                                    <?= tgl_indo($send['tgl_transaksi']) ?>
                                                 </td>
                                                 <td>
-                                                    <?= $transaksi_pengiriman['produk'] ?>
+                                                    <?= $send['produk'] ?>
                                                 </td>
                                                 <td class="text-center">
-                                                    <img src="../asset/img/<?=$transaksi_pengiriman['img'] ?>" width="150px" alt="">
-                                                    <!-- <img src="../asset/img/640b1c894bc84.jpg" width="150px" alt=""> -->
+                                                    <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalView<?= $send['img']; ?>"><i class="fas fa-eye"></i></button>
                                                 </td>
                                                 <td>
-                                                    <?= $transaksi_pengiriman['jumlah_produk'] ?>
+                                                    <?= $send['nama_pengirim'] ?>
                                                 </td>
                                                 <td>
-                                                    <?= $transaksi_pengiriman['sub_harga'] ?>
+                                                    <?= $send['alamat'] ?>
                                                 </td>
                                                 <td>
-                                                    <?= $transaksi_pengiriman['kode_unik'] ?>
+                                                    <?= $send['nomor_telpon'] ?>
                                                 </td>
                                                 <td>
-                                                    <?= $transaksi_pengiriman['total_harga'] ?>
+                                                    <?= $send['jumlah_produk'] ?>
                                                 </td>
                                                 <td>
-                                                    <?= $transaksi_pengiriman['username_user'] ?>
+                                                    <?= rupiah($send['sub_harga']) ?>
                                                 </td>
                                                 <td>
-                                                    <?= $transaksi_pengiriman['nama_user'] ?>
+                                                    <?= $send['kode_unik'] ?>
                                                 </td>
                                                 <td>
-                                                    <?= $transaksi_pengiriman['username_seller'] ?>
+                                                    <?= rupiah($send['total_harga']) ?>
                                                 </td>
                                                 <td>
-                                                    <?= $transaksi_pengiriman['nama_seller'] ?>
+                                                    <?= $send['username_user'] ?>
                                                 </td>
                                                 <td>
-                                                    <?= $transaksi_pengiriman['status'] ?>
+                                                    <?= $send['nama_user'] ?>
+                                                </td>
+                                                <td>
+                                                    <?= $send['username_seller'] ?>
+                                                </td>
+                                                <td>
+                                                    <?= $send['nama_seller'] ?>
+                                                </td>
+                                                <td>
+                                                    <?= $send['status'] ?>
                                                 </td>
                                             </tr>
                                             <?php
@@ -142,27 +151,24 @@ $username = $_SESSION['username'];
 
                                             ?>
                                     </tbody>
-                                    <!-- Start delete modal -->
-                                    <div class="modal fade-costum" id="modalHapus<?= $seller_active['username']; ?>" role="dialog">
-                                        <div class="modal-dialog">
+                                    <!-- Start ubah modal -->
+                                    <div class="modal fade-costum" id="modalView<?= $send['img']; ?>" role="dialog">
+                                        <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Hapus Data</h5>
+                                                    <h5 class="modal-title">Bukti Transfer</h5>
                                                     <button type="button" data-bs-dismiss="modal" class="btn-close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <form role="form" action="" method="POST" autocomplete="off">
                                                         <?php
-                                                        $username = $seller_active['username'];
-                                                        $edits = query_data("SELECT * FROM tbl_seller WHERE username='$username'");
+                                                        $kode_transaksi = $send['kode_transaksi'];
+                                                        $edits = query_data("SELECT * FROM tbl_transaksi WHERE kode_transaksi='$kode_transaksi'");
                                                         foreach ($edits as $edit) :
                                                         ?>
-                                                            <input type="hidden" name="username" value="<?= $edit['username']; ?>">
-                                                            <input type="hidden" name="image_profile" value="<?= $edit['image_profile']; ?>">
-                                                            <p>Yakin untuk menghapus data ?</p>
+                                                            <img src="../asset/img/<?= $edit['img'] ?>" class="img-fluid" alt="gambar">
                                                             <div class="flex text-center mt-4 mb-3">
-                                                                <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Batal</button>
-                                                                <button type="submit" name="hapus" class="btn btn-danger ml-2">Hapus</button>
+                                                                <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Close</button>
                                                             </div>
                                                         <?php
                                                         endforeach
@@ -172,33 +178,57 @@ $username = $_SESSION['username'];
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- End delete modal -->
+                                    <!-- End ubah modal -->
+
+                                    <!-- Start ubah modal -->
+                                    <div class="modal fade-costum" id="modalUbah<?= $send['username']; ?>" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Ubah Data</h5>
+                                                    <button type="button" data-bs-dismiss="modal" class="btn-close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form role="form" action="" method="POST" autocomplete="off">
+                                                        <?php
+                                                        $kode_transaksi = $send['kode_transaksi'];
+                                                        $edits = query_data("SELECT * FROM tbl_admin WHERE kode_transaksi='$kode_transaksi'");
+                                                        foreach ($edits as $edit) :
+                                                        ?>
+                                                            <input type="hidden" name="kode_transaksi" value="<?= $edit['kode_transaksi']; ?>">
+                                                            <div class="flex text-center mt-4 mb-3">
+                                                                <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Batal</button>
+                                                                <button type="submit" name="ubah" class="btn btn-info ml-2">Ubah</button>
+                                                            </div>
+                                                        <?php
+                                                        endforeach
+                                                        ?>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End ubah modal -->
                                 <?php
                                         endforeach;
                                 ?>
-
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- /.container-fluid -->
-
             </div>
             <!-- End of Main Content -->
-
             <!-- Footer -->
             <?php
             require 'views/footer.php';
             ?>
             <!-- End of Footer -->
-
         </div>
         <!-- End of Content Wrapper -->
-
     </div>
     <!-- End of Page Wrapper -->
-
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
@@ -208,19 +238,18 @@ $username = $_SESSION['username'];
     <?php
     require 'views/modalLogout.php';
     require 'views/script.php';
-
-    if (isset($_POST['hapus'])) {
-        if (hapus_seller($_POST) > 0) {
+    if (isset($_POST['ubah'])) {
+        if (send($_POST) > 0) {
             echo '
                 <script type="text/javascript">
                     swal({
                         title: "Berhasil",
-                        text: "Berhasil Dihapus",
+                        text: "Berhasil Diubah",
                         icon: "success",
                         showConfirmButton: true,
                     }).then(function(isConfirm){
                         if(isConfirm){
-                            window.location.replace("seller_active.php");
+                            window.location.replace("admin.php");
                         }
                     });
                 </script>
@@ -230,19 +259,18 @@ $username = $_SESSION['username'];
                 <script type="text/javascript">
                     swal({
                         title: "Gagal",
-                        text: "Gagal Dihapus",
+                        text: "Gagal Diubah",
                         icon: "error",
                         showConfirmButton: true,
                     }).then(function(isConfirm){
                         if(isConfirm){
-                            window.location.replace("seller_active.php");
+                            window.location.replace("admin.php");
                         }
                     });
                 </script>
             ';
         }
     }
-
     ?>
 
 
